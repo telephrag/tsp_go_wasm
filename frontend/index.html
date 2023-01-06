@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    
+    <script src="wasm_exec.js"></script>
+    <script>
+        const go = new Go();
+        WebAssembly.instantiateStreaming(fetch("calc.wasm"), go.importObject).then((result) => {
+            go.run(result.instance);
+        });
+    </script>
+
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Travelling salesman</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='./main.css'>
+    <script src='./app.js'></script>
+</head>
+<body>
+    Input the amount of nodes in a graph:
+    <input type="text" class="graph-nodes-count" id="graph-nodes-count"><br><br>
+    Note that graph is hamiltonian so, p(a,b) = p(b,a) and each node is connected with every other.<br><br>
+    <input type="button" value="Create graph" onclick="createGraph()" class="graph-btn"><br><br>
+    <table id="graph">
+        <!-- Table that stores travelled graph -->
+    </table><br><br> 
+
+    <input type="button" value="Calculate over graph" onclick="calcOverGraph()" class="graph-btn"><br><br>
+    <p id="result"></p>
+</body>
+</html>
