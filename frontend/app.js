@@ -6,12 +6,12 @@ var graph = {
 
 function must(err) {
     if (err != null) {
-        throw new alert(err)
+        throw new Error(err)
     }
 }
 
 function parsePosIntFromInputField(inputField) {
-    let nc = parseInt(inputField.value, 10)
+    const nc = parseInt(inputField.value, 10)
     if (!Number.isInteger(nc)) {
         return [null, `"${nc}" is not an integer`]
     }
@@ -28,6 +28,7 @@ function createGraph() {
     must(err)
     graph.nodeCount = nc // setting node count of the graph
     graph.adjList = [] // empty adjesency list after possible previous use
+    document.getElementById("result").innerHTML = ""
         
     let table = document.querySelector("table")
     table.innerHTML = ""
@@ -64,5 +65,19 @@ function createGraph() {
 }
 
 function calcOverGraph() {
-    calc(JSON.stringify(graph))
+    if (graph.adjList.length <= 1) {
+        throw new Error("cannot calculate on empty or single node graph")
+    }
+    
+    let c = calc(JSON.stringify(graph))
+    let res = JSON.parse(c)
+    if (typeof(res) != 'object') {
+        document.getElementById("result").innerHTML = res
+    }
+
+    document.getElementById("result").innerHTML = `
+        Path:     ${res.route}<br>
+        Distance: ${res.dist}<br>
+        ExecTime: ${res.et}<br>
+    `
 }

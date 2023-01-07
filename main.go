@@ -14,5 +14,4 @@ func main() {
 	if err := http.ListenAndServe("localhost:3000", fs); err != nil {
 		log.Fatal(err)
 	}
-
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"syscall/js"
 	"time"
@@ -23,7 +24,19 @@ func calc() js.Func {
 		fmt.Println(t.MinDist)
 		fmt.Println(et)
 
-		return 0 //[]string{fmt.Sprint(t.MinRoute), fmt.Sprint(t.MinDist), fmt.Sprint(et)}
+		type res struct {
+			Route []int `json:"route"`
+			Dist  int   `json:"dist"`
+			Et    int64 `json:"et"`
+		}
+
+		r := res{t.MinRoute, t.MinDist, et}
+		jr, err := json.Marshal(r)
+		if err != nil {
+			return err.Error()
+		}
+
+		return string(jr)
 	})
 }
 
