@@ -41,7 +41,6 @@ func calc() js.Func {
 }
 
 func main() {
-	fmt.Println("Chirtkem, mudila. Mon WASM gojyas'ko ali.")
 	js.Global().Set("calc", calc())
 	exit := make(chan struct{})
 	<-exit
