@@ -81,6 +81,29 @@ function redrawGraph(nc) {
     ctx.lineWidth = 3;
     ctx.stroke()
 
+    // draw node ids backgrounds
+    ctx.beginPath()
+    for (let i = 0; i < coords.length; i++) {
+        ctx.moveTo(coords[i].first, coords[i].second)
+        ctx.arc(coords[i].first, coords[i].second, 15, 0, Math.PI * 2);
+        ctx.fill()
+        // ctx.fillText(i.toString, coords[i].first, coords[i].second, 2)
+    }
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+    ctx.stroke()
+
+    // draw node id numbers
+    ctx.beginPath()
+    ctx.fillStyle = "#FFFFFF"
+    ctx.textAllign = "center"
+    ctx.textBaseline = "middle"
+    ctx.font = "15px Sans"
+    for (let i = 0; i < coords.length-1; i++) { // why length-1 ?!
+        ctx.moveTo(coords[i].first, coords[i].second)
+        ctx.fillText(i.toString(), coords[i].first-5, coords[i].second)
+    }
+
     document.getElementById("result").innerHTML = `
         Path:     ${res.route}<br>
         Distance: ${res.dist}<br>
