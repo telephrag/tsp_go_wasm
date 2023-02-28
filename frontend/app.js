@@ -4,6 +4,8 @@ var graph = {
     "nodeCount": 0,
 }
 
+var coords
+
 function must(err) {
     if (err != null) {
         throw new Error(err)
@@ -11,14 +13,14 @@ function must(err) {
 }
 
 function parsePosIntFromInputField(inputField) {
-    const nc = parseInt(inputField.value, 10)
-    if (!Number.isInteger(nc)) {
-        return [null, `"${nc}" is not an integer`]
+    const i = parseInt(inputField.value, 10)
+    if (!Number.isInteger(i)) {
+        return [null, `"${i}" is not an integer`]
     }
-    if (nc < 0) {
-        return [null, `"${nc}" is negative`]
+    if (i < 0) {
+        return [null, `"${i}" is negative`]
     }
-    return [nc, null]
+    return [i, null]
 }
 
 // drawing graphical representation of graph
@@ -54,8 +56,6 @@ function getHeightsCoords(nc) {
 function redrawGraph(nc) {
     ctx = getCanvasCtx() 
     ctx.beginPath();
-
-    coords = getHeightsCoords(nc)
 
     for (let i = 0; i < coords.length; i++) {
         for (let j = i; j < coords.length; j++) {
@@ -105,10 +105,17 @@ function redrawGraph(nc) {
     }
 
     document.getElementById("result").innerHTML = `
+    <pre>
         Path:     ${res.route}<br>
         Distance: ${res.dist}<br>
-        ExecTime: ${res.et}<br>
+        ExecTime: ${res.et}μs<br>
+        Error:    ${res.err}<br>
+    </pre>
     `
+}
+
+function redrawGraphWrapper() {
+    redrawGraph(graph.nc)
 }
 
 function createGraph() {
@@ -120,18 +127,20 @@ function createGraph() {
     graph.adjList = [] // empty adjesency list after possible previous use
     document.getElementById("result").innerHTML = "" // resetting result
         
-    let table = document.querySelector("table")
+    let table = document.getElementById("graph")
     table.innerHTML = ""
     let tHead = table.createTHead()
 
     for (let i = 0; i < nc; i++) {
         let row = tHead.insertRow()
-        id = document.createTextNode(`${i} | `)
         graph.adjList.push({})
-        row.appendChild(id)
-
+        
         for (let j = i; j < nc; j++) { // skip some nodes since p(a,b) = p(b,a)
-            if (j == i) { continue } // skip since traversion from node to itself is impossible
+            if (j == i) { 
+                cell = row.insertCell()
+                cell.setAttribute("colSpan", j+1)
+                continue // skip since traversion from node to itself is impossible
+            }
             
             let input = document.createElement("input")
             input.setAttribute("type", "text") 
@@ -152,11 +161,23 @@ function createGraph() {
                 graph.adjList[i][`${j}`] = val
                 graph.adjList[j][`${i}`] = val
 
+                if (nc > 10) {
+                    document.getElementById("result").innerHTML = `
+                        The graph is too big to calculate interactively. 
+                        Please, press "Calculate" once you've done inputing the values.
+                    `
+                    return
+                }
+
                 redrawGraph(nc)
             })
         }
+
+        id = document.createTextNode(`\xa0 |\xa0 ${i}`)
+        row.appendChild(id)
     }
 
+    coords = getHeightsCoords(nc)
 }
 
 function calcOverGraph() {

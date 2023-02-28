@@ -25,12 +25,17 @@ func calc() js.Func {
 		fmt.Println(et)
 
 		type res struct {
-			Route []int `json:"route"`
-			Dist  int   `json:"dist"`
-			Et    int64 `json:"et"`
+			Route []int  `json:"route"`
+			Dist  int    `json:"dist"`
+			Et    int64  `json:"et"`
+			Err   string `json:"err"`
 		}
 
-		r := res{t.MinRoute, t.MinDist, et}
+		var tspErrStr string
+		if t.Err != nil {
+			tspErrStr = t.Err.Error()
+		}
+		r := res{t.MinRoute, t.MinDist, et, tspErrStr}
 		jr, err := json.Marshal(r)
 		if err != nil {
 			return err.Error()

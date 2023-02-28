@@ -1,8 +1,11 @@
 package tsp
 
 import (
+	"errors"
 	"sync"
 )
+
+var ErrEmptyGraph = errors.New("graph is empty")
 
 func nextPermutation(route []int) {
 	for i := len(route) - 1; i >= 0; i-- {
@@ -63,7 +66,8 @@ func (t *Tsp) travel(startNode int) {
 
 func (t *Tsp) Solve() {
 	if graph == nil {
-		panic("graph is empty")
+		t.Err = ErrEmptyGraph
+		return
 	}
 
 	nodeSet := make([]int, t.NodeCount-1)

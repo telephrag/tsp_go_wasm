@@ -19,6 +19,7 @@ type Tsp struct {
 	NodeCount int
 	MinRoute  []int
 	MinDist   int // current minimal path length
+	Err       error
 	Mu        sync.Mutex
 }
 
